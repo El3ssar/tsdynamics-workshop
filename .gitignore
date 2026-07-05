@@ -22,3 +22,6 @@ _*.gif
 # OS
 .DS_Store
 Thumbs.db
+
+# Express notebook local output
+express_assets/
