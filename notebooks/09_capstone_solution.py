@@ -46,16 +46,38 @@ print("tsdynamics", ts.__version__)
 
 # %%
 # Shared imports for the capstone: pandas for the logs + the mechanistic grid model.
+import os
 import sys
+import urllib.request
 import pandas as pd
-sys.path.insert(0, "/home/elessar/Projects/tsdynamics-workshop/capstone")
+
+
+def _capstone_paths():
+    """Locate the capstone model + data whether we run from a clone (Binder/local,
+    from ``notebooks/`` or the repo root) or standalone (Colab). On Colab this
+    fetches the three small files from GitHub so the notebook is self-sufficient."""
+    for cap in ("../capstone", "capstone"):
+        if os.path.exists(os.path.join(cap, "grid_model.py")):
+            root = os.path.dirname(os.path.abspath(cap))
+            return cap, os.path.join(cap, "data"), os.path.join(root, "assets", "img")
+    base = "https://raw.githubusercontent.com/El3ssar/tsdynamics-workshop/main"
+    os.makedirs("capstone/data", exist_ok=True)
+    for rel in ("capstone/grid_model.py",
+                "capstone/data/scada_stream.csv",
+                "capstone/data/stress_test.csv"):
+        if not os.path.exists(rel):
+            urllib.request.urlretrieve(f"{base}/{rel}", rel)
+    return "capstone", "capstone/data", "assets/img"
+
+
+CAP, DATA, ASSETS = _capstone_paths()
+sys.path.insert(0, CAP)
+os.makedirs(ASSETS, exist_ok=True)
+
 from grid_model import (
     GridNode, NoisyGridNode, delta_star, critical_load, leading_eigenvalue,
 )
 from tsdynamics.data import Box, Grid
-
-DATA = "/home/elessar/Projects/tsdynamics-workshop/capstone/data"
-ASSETS = "/home/elessar/Projects/tsdynamics-workshop/assets/img"
 
 # GridNode is parametrized with a params dict (or .with_params); K = 1.0 is the line limit.
 print("Fold load  P_c = K =", critical_load())

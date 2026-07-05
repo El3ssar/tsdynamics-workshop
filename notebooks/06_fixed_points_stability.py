@@ -402,9 +402,12 @@ print(f"\n{len(list(fps_t))} equilibria; {n_stable} stable.")
 # %%
 henon2 = ts.Henon()
 hen_region = Box(np.array([-2.0, -2.0]), np.array([2.0, 2.0]))
+# The stabilised (DL) search transiently probes large x where the Hénon map overflows —
+# harmless for the root finder, so we silence that transient RuntimeWarning.
 for solver in ("newton", "dl"):
     print(f"method = {solver!r}:")
-    hfps2 = ts.fixed_points(henon2, region=hen_region, method=solver)
+    with np.errstate(over="ignore", invalid="ignore"):
+        hfps2 = ts.fixed_points(henon2, region=hen_region, method=solver)
     for fp in hfps2:
         mags = np.abs(fp.eigenvalues)
         inside = np.sum(mags < 1.0)

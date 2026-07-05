@@ -344,8 +344,9 @@ plt.close(fig)
 import os
 from IPython.display import Image
 
-os.makedirs("../assets/img", exist_ok=True)
-gif_path = "../assets/img/07_tipping.gif"
+_img_dir = "../assets/img" if os.path.isdir("../assets") else "assets/img"
+os.makedirs(_img_dir, exist_ok=True)
+gif_path = f"{_img_dir}/07_tipping.gif"
 
 # Start pinned in the left well, then push F past the fold and watch it escape.
 tw.params["F"] = 0.0

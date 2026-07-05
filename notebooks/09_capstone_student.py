@@ -65,7 +65,29 @@ print("tsdynamics", ts.__version__)
 
 # %%
 # Load both logs. (This cell RUNS — it is the raw evidence, no TODO.)
-DATA = "../capstone/data"
+# Portable path setup: works from a clone (Binder/local) or standalone (Colab, where
+# it fetches the model + data from GitHub so the notebook is self-sufficient).
+import os
+import sys
+import urllib.request
+
+
+def _capstone_paths():
+    for cap in ("../capstone", "capstone"):
+        if os.path.exists(os.path.join(cap, "grid_model.py")):
+            return cap, os.path.join(cap, "data")
+    base = "https://raw.githubusercontent.com/El3ssar/tsdynamics-workshop/main"
+    os.makedirs("capstone/data", exist_ok=True)
+    for rel in ("capstone/grid_model.py",
+                "capstone/data/scada_stream.csv",
+                "capstone/data/stress_test.csv"):
+        if not os.path.exists(rel):
+            urllib.request.urlretrieve(f"{base}/{rel}", rel)
+    return "capstone", "capstone/data"
+
+
+CAP, DATA = _capstone_paths()
+sys.path.insert(0, CAP)
 scada = pd.read_csv(f"{DATA}/scada_stream.csv", comment="#")
 stress = pd.read_csv(f"{DATA}/stress_test.csv", comment="#")
 

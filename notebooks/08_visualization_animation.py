@@ -46,9 +46,10 @@ import tsdynamics as ts
 print("tsdynamics", ts.__version__)
 
 # %%
-# A tiny helper so every gif we make lands in the workshop's asset folder.
+# A tiny helper so every gif we make lands in a writable folder — the workshop's
+# asset folder in a clone, or a local one on Colab (where ../assets doesn't exist).
 import os
-IMG_DIR = "../assets/img"
+IMG_DIR = "../assets/img" if os.path.isdir("../assets") else "assets/img"
 os.makedirs(IMG_DIR, exist_ok=True)
 
 # %% [markdown]
