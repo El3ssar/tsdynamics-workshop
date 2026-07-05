@@ -1,0 +1,24 @@
+# TSDynamics workshop — Python >= 3.12 REQUIRED
+# (tsdynamics ships cp312-abi3 wheels for Linux/macOS/Windows; older Pythons cannot install it.)
+#
+# Local install:   uv pip install -r requirements.txt      (or) pip install -r requirements.txt
+# On Google Colab: the first cell of each notebook installs this automatically.
+# On Binder:       uses environment.yml (conda, pins Python 3.12 + ffmpeg).
+
+tsdynamics[viz,interactive]==5.3.1   # the library (pins the matplotlib + plotly renderers)
+
+# Notebook stack
+jupyterlab>=4.2
+notebook>=7.2
+ipywidgets>=8.1
+
+# Plotting / data / animation
+matplotlib>=3.9
+plotly>=6,<7
+pandas>=2.2
+imageio>=2.34
+imageio-ffmpeg>=0.5   # bundles an ffmpeg binary for .mp4 export (gif export needs nothing extra)
+pillow>=10
+tqdm>=4.66
+
+# numpy, scipy, symengine, sympy are installed automatically as tsdynamics dependencies.

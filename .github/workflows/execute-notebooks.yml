@@ -1,0 +1,38 @@
+name: execute-notebooks
+
+# Validates that every workshop notebook runs top-to-bottom against the pinned stack.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ffmpeg (for .mp4 animations)
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install the workshop stack
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Regenerate capstone data
+        run: cd capstone && python generate_data.py
+
+      - name: Execute every notebook
+        run: |
+          for nb in notebooks/*.ipynb; do
+            echo "::group::$nb"
+            jupyter nbconvert --to notebook --execute --inplace \
+              --ExecutePreprocessor.timeout=1200 "$nb"
+            echo "::endgroup::"
+          done
