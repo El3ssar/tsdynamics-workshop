@@ -98,9 +98,18 @@ print("Rössler spectrum:", np.round(ross_spectrum, 3), "→ leading exponent > 
 # records where the orbit settles.
 
 # %%
+def show_bifurcation(od, title):
+    """Scatter the asymptotic states the sweep recorded — the classic picture."""
+    r = np.repeat(np.asarray(od.values), np.asarray(od.points).shape[1])
+    x = np.asarray(od.points)[:, :, 0].ravel()
+    fig, ax = plt.subplots(figsize=(8.5, 5))
+    ax.plot(r, x, ",k", alpha=0.25)
+    ax.set_xlabel("r"); ax.set_ylabel("asymptotic state"); ax.set_title(title)
+    return fig
+
 bif = ts.bifurcation_diagram(ts.Logistic(), "r", np.linspace(2.8, 4.0, 800),
                              n=180, transient=400)
-bif.plot()
+show_bifurcation(bif, "Logistic map — the period-doubling road to chaos")
 
 # %% [markdown]
 # Read it left to right: a single stable state, then period-2, period-4, period-8 … a **period-doubling
@@ -110,7 +119,8 @@ bif.plot()
 # or `np.linspace(3.82, 3.86, 800)` to land inside the famous period-3 window.
 
 # %%
-ts.bifurcation_diagram(ts.Logistic(), "r", np.linspace(3.5, 3.6, 800), n=200, transient=500).plot()
+show_bifurcation(ts.bifurcation_diagram(ts.Logistic(), "r", np.linspace(3.5, 3.6, 800), n=200, transient=500),
+                 "Zoom into 3.5 ≤ r ≤ 3.6 — the cascade is self-similar")
 
 # %% [markdown]
 # ## 4 · Build your own system
